@@ -28,6 +28,10 @@ volatile uint32_t Tick;
 #define LED_TIME_BLINK 300
 #define LED_TIME_SHORT 100
 #define LED_TIME_LONG 1000
+
+void blikac();
+void tlacitka ();
+
 void SysTick_Handler(void)
 {
 	Tick++;
@@ -52,7 +56,7 @@ int main(void)
 
 	/* Loop forever */
 	for(;;) {
-		//blikac();
+		blikac();
 		tlacitka();
 	}
 }
@@ -67,7 +71,7 @@ void EXTI0_1_IRQHandler(void)
 }
 */
 
-void blikac(void)
+void blikac()
 {
 	static uint32_t delay;
 	if (Tick > delay + LED_TIME_BLINK) {
@@ -76,10 +80,10 @@ void blikac(void)
 	}
 }
 
-void tlacitka(void)
+void tlacitka ()
 {
 	static uint32_t old_s2;
-	static uint32_t old_s1;
+	//static uint32_t old_s1;
 	static uint32_t off_time;
 	static uint32_t sample40;
 	static uint32_t interval5;
@@ -98,7 +102,7 @@ void tlacitka(void)
 					GPIOB->BSRR = (1<<0);
 				}
 		*/
-		old_s1 = new_s1;
+		//old_s1 = new_s1;
 		old_s2 = new_s2;
 		sample40 = Tick;
 	}
