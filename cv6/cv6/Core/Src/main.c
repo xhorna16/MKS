@@ -95,6 +95,8 @@ int main(void)
   MX_ADC_Init();
   /* USER CODE BEGIN 2 */
 OWInit();
+HAL_ADCEx_Calibration_Start(&hadc);
+HAL_ADC_Start(&hadc);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -136,8 +138,7 @@ OWInit();
 	  {
 		  HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, 0);
 		  HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, 1);
-		  HAL_ADCEx_Calibration_Start(&hadc);
-		  HAL_ADC_Start(&hadc);
+
 		  static uint16_t lastGetTick = 0;
 		  if((HAL_GetTick()-lastGetTick)>=750)
 		  {
