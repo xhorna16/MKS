@@ -437,37 +437,35 @@ void StartAcceleroTask(void const * argument)
 	uint8_t whoamI = 0;
 	lis2dw12_device_id_get(&lis2dw12, &whoamI);
 	printf("LIS2DW12_ID %s\n", (whoamI == LIS2DW12_ID) ? "OK" : "FAIL");
+
 	lis2dw12_full_scale_set(&lis2dw12, LIS2DW12_2g);
 	lis2dw12_power_mode_set(&lis2dw12, LIS2DW12_CONT_LOW_PWR_LOW_NOISE_2);
 	lis2dw12_block_data_update_set(&lis2dw12, PROPERTY_ENABLE);
 	lis2dw12_fifo_mode_set(&lis2dw12, LIS2DW12_STREAM_MODE); // enable continuous FIFO
 	lis2dw12_data_rate_set(&lis2dw12, LIS2DW12_XL_ODR_25Hz); // enable part from power-down
+
     uint8_t samples;
     int16_t raw_acceleration[3];
 	/* Infinite loop */
-	for(;;)
-  {
-    //osDelay(1);
-    lis2dw12_fifo_data_level_get(&lis2dw12, &samples);
-    for (uint8_t i = 0; i < samples; i++) {
-    // Read acceleration data
-    lis2dw12_acceleration_raw_get(&lis2dw12, raw_acceleration);
-    //printf("X=%d Y=%d Z=%d\n", raw_acceleration[0], raw_acceleration[1], raw_acceleration[2]);
-    }
-    static uint8_t counter; //pocitac odeslani, po 20 odeslanich ubehne zadany cas 20*50ms=1s
-    xQueueSend(xVisualQueueHandle, &raw_acceleration[0], 0);
-    osDelay(50);
-    counter++;
-    if (counter>20) {
-    	printf("X=%d Y=%d Z=%d\n", raw_acceleration[0], raw_acceleration[1], raw_acceleration[2]);
-    	counter=0;
-    }
+    for(;;)
+    {
+    	//osDelay(1);
+    	lis2dw12_fifo_data_level_get(&lis2dw12, &samples);
+    	for (uint8_t i = 0; i < samples; i++) {
+    		// Read acceleration data
+    		lis2dw12_acceleration_raw_get(&lis2dw12, raw_acceleration);
+    		//printf("X=%d Y=%d Z=%d\n", raw_acceleration[0], raw_acceleration[1], raw_acceleration[2]);
+    	}
+    	static uint8_t counter; //pocitac odeslani, po 20 odeslanich ubehne zadany cas 20*50ms=1s
+    	xQueueSend(xVisualQueueHandle, &raw_acceleration[0], 0);
+    	osDelay(50);
+    	counter++;
+    	if (counter>20) {
+    		printf("X=%d Y=%d Z=%d\n", raw_acceleration[0], raw_acceleration[1], raw_acceleration[2]);
+    		counter=0;
+    	}
 
-  }
-	// UART init
-	uint8_t c;
-	HAL_UART_Receive(&huart2, &c, 1, HAL_MAX_DELAY);
-	HAL_UART_Transmit(&huart2, &c, 1, HAL_MAX_DELAY);
+    }
   /* USER CODE END StartAcceleroTask */
 }
 
